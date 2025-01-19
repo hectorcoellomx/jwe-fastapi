@@ -38,6 +38,22 @@ def create_jwe_token(user_data):
     return enc
 
 
+def userFormat(result_array):
+    user_data = { 
+        "federation": { 
+            "userId" : result_array[0], 
+            "email" : result_array[1], 
+            "termsAccepted" : False 
+        },
+        "userInfo": { 
+            "person" : { "personName" : { "givenName" : result_array[2], "lastName" : result_array[3], "secondLastName" : result_array[4] } }, 
+            "userEntities" : { "userId" : result_array[0], "entity" : { "entityId" : result_array[5] } }, 
+            "userNotificationsGroups" : { "mandatory" : [ "student" ] } 
+            } 
+        }
+    return user_data
+
+#Routes
 
 @app.get("/")
 async def root():
@@ -49,18 +65,7 @@ async def jwe(data):
     result_array = decoded_string.split(',')
     
     if(len(result_array)==6):
-        user_data = { 
-            "federation": { 
-                "userId" : result_array[0], 
-                "email" : result_array[1], 
-                "termsAccepted" : False 
-            },
-            "userInfo": { 
-                "person" : { "personName" : { "givenName" : result_array[2], "lastName" : result_array[3], "secondLastName" : result_array[4] } }, 
-                "userEntities" : { "userId" : result_array[0], "entity" : { "entityId" : result_array[5] } }, 
-                "userNotificationsGroups" : { "mandatory" : [ "student" ] } 
-                } 
-            }
+        user_data = userFormat(result_array)
     elif(len(result_array)==1):
         user_data = { "federation": { "userId" : result_array[0] } }
     else:
