@@ -23,7 +23,7 @@ app.add_middleware(
 
 def create_jwe_token(user_data):
 
-    key_path = 'unach-public-key.pem'
+    key_path = 'public-key.pem'
     
     with open(key_path, 'rb') as key_file:
         public_key_pem = key_file.read()
@@ -38,16 +38,16 @@ def create_jwe_token(user_data):
     return enc
 
 
-def userFormat(result_array):
+def userFormat(data):
     user_data = { 
         "federation": { 
-            "userId" : result_array[0], 
-            "email" : result_array[1], 
+            "userId" : data[0], 
+            "email" : data[1], 
             "termsAccepted" : False 
         },
         "userInfo": { 
-            "person" : { "personName" : { "givenName" : result_array[2], "lastName" : result_array[3], "secondLastName" : result_array[4] } }, 
-            "userEntities" : { "userId" : result_array[0], "entity" : { "entityId" : result_array[5] } }, 
+            "person" : { "personName" : { "givenName" : data[2], "lastName" : data[3], "secondLastName" : data[4] } }, 
+            "userEntities" : { "userId" : data[0], "entity" : { "entityId" : data[5] } }, 
             "userNotificationsGroups" : { "mandatory" : [ "student" ] } 
             } 
         }
@@ -57,7 +57,7 @@ def userFormat(result_array):
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "JWE FastAPI"}
 
 @app.get("/jwe/{data}")
 async def jwe(data):
