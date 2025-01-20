@@ -61,7 +61,12 @@ async def root():
 
 @app.get("/jwe/{data}")
 async def jwe(data):
-    decoded_string = base64.b64decode(data).decode('utf-8')
+
+    try:
+        decoded_string = base64.b64decode(data).decode('utf-8')
+    except Exception:
+        return { "success": False, "data": "", "message" : "Error: It is not a valid base64", "value" : ""}
+
     result_array = decoded_string.split(',')
     
     if(len(result_array)==6):
@@ -73,4 +78,4 @@ async def jwe(data):
 
     token = create_jwe_token(user_data)
 
-    return { "data": token, "value" : user_data}
+    return { "success": True, "data": token, "message" : "Ok", "value" : user_data}
